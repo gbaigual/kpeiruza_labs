@@ -1,0 +1,44 @@
+version: '3.3'
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - backend
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    ports:
+      - "80"
+    networks:
+      - backend
+      - proxy
+    deploy:
+      replicas: 1
+      endpoint_mode: vip
+      labels:
+        traefik.port: 80
+        traefik.frontend.rule: "Host:wordpress.bchdna.lan"
+        traefik.docker.network: 'proxy'
+
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+volumes:
+  db_data: {}
+
+networks:
+  backend:
+  proxy:
+    external: true

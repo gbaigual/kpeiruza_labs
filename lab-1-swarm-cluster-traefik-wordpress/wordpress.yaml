@@ -27,7 +27,7 @@ services:
       endpoint_mode: vip
       labels:
         traefik.port: 80
-        traefik.frontend.rule: "Host:wordpress.bchdna.lan"
+        traefik.frontend.rule: "Host:wordpress.domain.lan"
         traefik.docker.network: 'proxy'
 
     environment:
